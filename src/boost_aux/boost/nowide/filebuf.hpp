@@ -214,6 +214,7 @@ namespace nowide {
             if(n > 0) {
                 if(::fwrite(pbase(),1,n,file_) < n)
                     return -1;
+                fflush(file_);
             }
 
             if(buffer_size_ > 0) {
@@ -225,6 +226,7 @@ namespace nowide {
             else if(c!=EOF) {
                 if(::fputc(c,file_)==EOF)
                     return EOF;
+                fflush(file_);
             }
             return 0;
         }
@@ -232,9 +234,7 @@ namespace nowide {
         
         int sync()
         {
-            return (file_ == 0 ||
-                    overflow(EOF)==EOF ||
-                    0 <= fflush(file_)) ? 0 : -1;
+            return overflow(EOF);
         }
 
         int underflow()
@@ -280,20 +280,20 @@ namespace nowide {
             if(fixp() < 0 || fixg() < 0)
                 return EOF;
             if(seekdir == std::ios_base::cur) {
-                if (::_fseeki64(file_, off, SEEK_CUR) < 0)
+                if( ::fseek(file_,off,SEEK_CUR) < 0)
                     return EOF;
             }
             else if(seekdir == std::ios_base::beg) {
-                if (::_fseeki64(file_, off, SEEK_SET) < 0)
+                if( ::fseek(file_,off,SEEK_SET) < 0)
                     return EOF;
             }
             else if(seekdir == std::ios_base::end) {
-                if (::_fseeki64(file_, off, SEEK_END) < 0)
+                if( ::fseek(file_,off,SEEK_END) < 0)
                     return EOF;
             }
             else
                 return -1;
-            return _ftelli64(file_);
+            return ftell(file_);
         }
         std::streampos seekpos(std::streampos off,std::ios_base::openmode m)
         {
@@ -305,7 +305,7 @@ namespace nowide {
             if(gptr()!=egptr()) {
                 std::streamsize off = gptr() - egptr();
                 setg(0,0,0);
-                if (_fseeki64(file_, off, SEEK_CUR) != 0)
+                if(fseek(file_,off,SEEK_CUR) != 0)
                     return -1;
             }
             setg(0,0,0);

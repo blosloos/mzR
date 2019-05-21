@@ -167,19 +167,12 @@ void Serializer_mzML::Impl::write(ostream& os, const MSData& msd,
     {
         stream_offset indexListOffset = xmlWriter.positionNext();
 
-        XMLWriter::Attributes attributes;
-	int indexList_count = 0;
-	if (msd.run.spectrumListPtr.get() && msd.run.spectrumListPtr->size() > 0)
-	  indexList_count++;
-	if (msd.run.chromatogramListPtr.get() && msd.run.chromatogramListPtr->size() > 0)
-	  indexList_count++;
-	attributes.add("count", indexList_count);
+        XMLWriter::Attributes attributes; 
+        attributes.push_back(make_pair("count", "2"));
         xmlWriter.startElement("indexList", attributes);
-	
-	if (msd.run.spectrumListPtr.get() && msd.run.spectrumListPtr->size() > 0)
-	  writeSpectrumIndex(xmlWriter, msd.run.spectrumListPtr, spectrumPositions);
-	if (msd.run.chromatogramListPtr.get() && msd.run.chromatogramListPtr->size() > 0)
-	  writeChromatogramIndex(xmlWriter, msd.run.chromatogramListPtr, chromatogramPositions);
+
+        writeSpectrumIndex(xmlWriter, msd.run.spectrumListPtr, spectrumPositions);
+        writeChromatogramIndex(xmlWriter, msd.run.chromatogramListPtr, chromatogramPositions);
 
         xmlWriter.endElement(); // indexList
 

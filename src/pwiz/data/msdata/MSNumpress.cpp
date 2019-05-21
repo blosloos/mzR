@@ -28,13 +28,13 @@
 #include <cmath>
 #include <algorithm>
 #include "MSNumpress.hpp"
+
 #include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 namespace MSNumpress {
 
-using std::cout;
-using Rcpp::Rcerr;
 using std::endl;
 using std::min;
 using std::max;
@@ -502,7 +502,7 @@ size_t decodePic(
         Rcpp::Rcerr << "count: " << count << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            Rcpp::Rcerr << "data[" << i << "] = " << data[i];
+          Rcpp::Rcerr << "data[" << i << "] = " << data[i];
         }
         Rcpp::Rcerr << endl;
     }

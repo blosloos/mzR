@@ -1,5 +1,5 @@
 //
-// $Id: Filesystem.cpp 10107 2016-10-18 17:21:07Z chambm $
+// $Id: Filesystem.cpp 7303 2015-03-13 20:19:40Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -27,7 +27,6 @@
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"
 #include <boost/utility/singleton.hpp>
 #include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
-#include <boost/locale/conversion.hpp>
 
 
 using std::string;
@@ -40,7 +39,6 @@ using std::runtime_error;
     #include <windows.h>
     #include <direct.h>
     #include <boost/nowide/convert.hpp>
-    #include <boost/noncopyable.hpp>
 #else
     #include <sys/types.h>
     #include <sys/stat.h>
@@ -251,20 +249,6 @@ string abbreviate_byte_size(uintmax_t byteSize, ByteSizeAbbreviation abbreviatio
 }
 
 
-#ifdef WIN32
-namespace {
-    struct FileWrapper : boost::noncopyable
-    {
-        FileWrapper(HANDLE h) : h(h) {}
-        ~FileWrapper() { CloseHandle(h); }
-        bool operator== (const HANDLE& rhs) { return h==rhs; }
-        private:
-        HANDLE h;
-    };
-}
-#endif
-
-
 PWIZ_API_DECL string read_file_header(const string& filepath, size_t length)
 {
     UTF8_BoostFilesystemPathImbuer::instance->imbue();
@@ -272,22 +256,12 @@ PWIZ_API_DECL string read_file_header(const string& filepath, size_t length)
     string head;
     if (!bfs::is_directory(filepath))
     {
-#ifdef WIN32 // check for locked files which can be opened by ifstream but only produce garbage when read (at least in VC12)
-        {
-            std::wstring wide_filepath = boost::locale::conv::utf_to_utf<wchar_t>(filepath);
-            FileWrapper handle(::CreateFileW(wide_filepath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
-            if (handle == INVALID_HANDLE_VALUE)
-                throw runtime_error("[read_file_header()] Unable to open file " + filepath + " (invalid permission or file locked)");
-        }
-#endif
-
         random_access_compressed_ifstream is(filepath.c_str());
         if (!is)
-            throw runtime_error("[read_file_header()] Unable to open file " + filepath + " (" + strerror(errno) + ")");
+            throw runtime_error(("[read_file_header()] Unable to open file " + filepath).c_str());
 
         head.resize(length, '\0');
-        if (!is.read(&head[0], (std::streamsize)head.size()) && !is.eof())
-            throw runtime_error("[read_file_header()] Unable to read file " + filepath + " (" + strerror(errno) + ")");
+        is.read(&head[0], (std::streamsize)head.size());
     }
     return head;
 }

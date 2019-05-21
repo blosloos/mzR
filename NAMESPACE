@@ -5,15 +5,10 @@ import(BiocGenerics)
 import(ProtGenerics)
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)
-importFrom("utils", "packageVersion")
 ##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
 
-export(openMSfile,
-       openIDfile,
-       pwiz.version,
-       nChrom,
-       copyWriteMSData)
+export(openMSfile, openIDfile, pwiz.version)
 
 exportMethods(close,
               isInitialized,
@@ -30,7 +25,7 @@ exportMethods(close,
               detector,
               header,
               peaksCount,
-              peaks, spectra,
+              peaks,
               get3Dmap,
               softwareInfo,
               sampleInfo,
@@ -43,12 +38,7 @@ exportMethods(close,
               enzymes,
               tolerance,
               score,
-              para,
-              tic,
-              chromatogram,
-              chromatograms,
-              chromatogramHeader,
-              writeMSData)
+              para)
 
 exportClasses("mzR",
               "mzRramp",

@@ -30,8 +30,8 @@
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 #include <iostream>
-#include <Rcpp.h>
 
+#include <Rcpp.h>
 
 namespace pwiz {
 namespace msdata {

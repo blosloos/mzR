@@ -29,7 +29,7 @@
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "SpectrumWorkerThreads.hpp"
-#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 namespace IO {
@@ -463,16 +463,15 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const FileDescription& fd)
     write(writer, fd.fileContent);
 
     XMLWriter::Attributes attributes;
-    if (fd.sourceFilePtrs.size() > 0) {
-      attributes.add("count", fd.sourceFilePtrs.size());
-      writer.startElement("sourceFileList", attributes);
-      
-      for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
-	   it!=fd.sourceFilePtrs.end(); ++it)
-	write(writer, **it);
-      
-      writer.endElement();
-    }
+    attributes.add("count", fd.sourceFilePtrs.size());
+    writer.startElement("sourceFileList", attributes);
+
+    for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
+         it!=fd.sourceFilePtrs.end(); ++it)
+         write(writer, **it);
+
+    writer.endElement();
+
     for (vector<Contact>::const_iterator it=fd.contacts.begin(); 
          it!=fd.contacts.end(); ++it)
          write(writer, *it);
@@ -1492,12 +1491,12 @@ struct HandlerScan : public HandlerParamContainer
                         try
                         {
                             lexical_cast<int>(externalNativeID);
-                            //Rcpp::Rcerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
+                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
                             scan->externalSpectrumID = "scan=" + externalNativeID;
                         }
                         catch(exception&)
                         {
-                            //Rcpp::Rcerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
+                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
                             scan->externalSpectrumID = externalNativeID;
                         }
                 }

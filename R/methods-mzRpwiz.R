@@ -1,103 +1,111 @@
-setMethod("get3Dmap", "mzRpwiz",
-          function(object, scans, lowMz, highMz, resMz)
-          return(object@backend$get3DMap(scans, lowMz, highMz, resMz)))
+setMethod("get3Dmap",
+          signature="mzRpwiz",
+          function(object,scans,lowMz,highMz,resMz)
+          return(object@backend$get3DMap(scans,lowMz,highMz,resMz)))
 
-setMethod("writeMSfile", "mzRpwiz",
-         function(object, filename, outformat)
-         object@backend$writeMSfile(filename, outformat))
+##setMethod("writeMSfile",
+##          signature="mzRpwiz",
+##          function(object, filename, outformat)
+##          object@backend$writeMSfile(filename, outformat))
 
-setMethod("length", "mzRpwiz",
+setMethod("length",
+          signature=c("mzRpwiz"),
           function(x) return(x@backend$getLastScan()))
 
-setMethod("instrumentInfo", "mzRpwiz",
+setMethod("instrumentInfo",
+          signature="mzRpwiz",
           function(object)
           return(object@backend$getInstrumentInfo()))
 
-setMethod("chromatogramsInfo", "mzRpwiz",
-          function(object) {
-              .Defunct("chromatogram")
-          })
+setMethod("chromatogramsInfo",
+          signature="mzRpwiz",
+          function(object)
+          return(object@backend$getChromatogramsInfo()))
 
 
-setMethod("manufacturer", "mzRpwiz",
+setMethod("manufacturer",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$manufacturer)
           })
 
-setMethod("model", "mzRpwiz",
+setMethod("model",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$model)
           })
 
-setMethod("ionisation", "mzRpwiz",
+setMethod("ionisation",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$ionisation)
           })
 
-setMethod("analyzer", "mzRpwiz",
+setMethod("analyzer",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$analyzer)
           })
 
-setMethod("detector", "mzRpwiz",
+setMethod("detector",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$detector)
           })
 
-setMethod("header", c("mzRpwiz", "missing"),
-          function(object) {
-              res <- object@backend$getAllScanHeaderInfo()
-              res$filterString <- as.character(res$filterString)
-              res$spectrumId <- as.character(res$spectrumId)
-              res
-          })
+setMethod("header",
+          signature=c("mzRpwiz","missing"),
+          function(object) return(object@backend$getAllScanHeaderInfo()))
 
-setMethod("header", c("mzRpwiz", "numeric"),
+setMethod("header",
+          signature=c("mzRpwiz","numeric"),
           function(object, scans) {
-              res <- object@backend$getScanHeaderInfo(scans)
-              res$filterString <- as.character(res$filterString)
-              res$spectrumId <- as.character(res$spectrumId)
-              if (length(scans) == 1) {
-                  ## Convert data.frame to list to be conform with old code
-                  res <- as.list(res)
-              }
-              res
-          })
-
-headerFor <- function(object, idx) {
-    if (missing(idx))
-        stop("Required parameter 'idx' is missing.")
-    return(object@backend$getScanHeaderInfoFor(as.integer(idx)))
-}
-
-setMethod("peaks", "mzRpwiz",
-          function(object, scans) .peaks(object, scans))
-setMethod("spectra", "mzRpwiz",
-          function(object, scans) .peaks(object, scans))
-
-setMethod("peaksCount", c("mzRpwiz", "numeric"),
-          function(object, scans) {
-            if (length(scans) == 1) {
-              return(object@backend$getPeakList(scans)$peaksCount)
+            if (length(scans)==1) {
+              return(object@backend$getScanHeaderInfo(scans))
             } else {
-                return(sapply(scans,
-                              function(x)
-                                  object@backend$getPeakList(x)$peaksCount))
+              return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
             }
           })
 
-setMethod("peaksCount", c("mzRpwiz", "missing"),
-          function(object) {
-            n <- length(object)
-            return(peaksCount(object, 1:n))
+setMethod("peaks",
+          signature=c("mzRpwiz"),
+          function(object, scans) {
+              if (missing(scans))
+                  scans <- 1:length(object)
+
+              if (length(scans) == 1) {
+                  return(object@backend$getPeakList(scans)$peaks)
+              } else {
+                  return(sapply(scans,
+                                function(x) object@backend$getPeakList(x)$peaks,
+                                simplify = FALSE))
+              }
           })
 
-setMethod("runInfo", "mzRpwiz",
+setMethod("peaksCount",
+          signature=c("mzRpwiz","numeric"),
+          function(object,scans) {
+            if (length(scans)==1) {
+              return(object@backend$getPeakList(scans)$peaksCount)
+            } else {
+              return(sapply(scans,function(x) object@backend$getPeakList(x)$peaksCount))
+            }
+          })
+
+setMethod("peaksCount",
+          signature=c("mzRpwiz","missing"),
+          function(object) {
+            n <- length(object)
+            return(peaksCount(object,1:n))
+          })
+
+setMethod("runInfo",
+          signature="mzRpwiz",
           function(object) {
             hd <- header(object)
             ll <- list()
@@ -107,36 +115,39 @@ setMethod("runInfo", "mzRpwiz",
             ll$'dStartTime' <- min(hd$retentionTime)
             ll$'dEndTime' <- max(hd$retentionTime)
             ll$'msLevels' <- unique(hd$msLevel)
-            time_stamp <- object@backend$getRunStartTimeStamp()
-            if (time_stamp == "")
-                time_stamp <- NA
-            ll$'startTimeStamp' <- time_stamp
             return(ll)
           })
 
-setMethod("softwareInfo", "mzRpwiz",
+setMethod("softwareInfo",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$software)
           })
 
-setMethod("sampleInfo", "mzRpwiz",
+setMethod("sampleInfo",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$sample)
           })
 
-setMethod("sourceInfo", "mzRpwiz",
+setMethod("sourceInfo",
+          signature="mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$source)
           })
 
-setMethod("close", "mzRpwiz",
-          function(con, ...) {
+setMethod("close",
+          signature = "mzRpwiz",
+          function(con,...) {
               con@backend$close()
               invisible(TRUE)
           })
+
+
+
 
 setMethod("show", "mzRpwiz",
           function(object) {
@@ -152,65 +163,3 @@ pwiz.version <- function() {
 
 setMethod("isolationWindow", "mzRpwiz",
           function(object, ...) .isolationWindow(fileName(object), ...))
-
-## Chromatograms
-
-nChrom <- function(object) {
-          stopifnot(inherits(object, "mzRpwiz"))
-          object@backend$getLastChrom()
-}
-
-setMethod("tic", "mzRpwiz",
-          function(object, ...) {
-              if (nChrom(object) < 1)
-                  stop("No chromatogram data available.")
-              object@backend$getChromatogramsInfo(0L)
-          })
-
-setMethod("chromatograms", "mzRpwiz",
-          function(object, chrom) chromatogram(object, chrom))
-
-
-setMethod("chromatogram", "mzRpwiz",
-          function(object, chrom) {
-              ## To avoid confusion, the first chromatogram (at index
-              ## 0) is indexed at position 1 in R and the last one (at
-              ## index nChrom(object) - 1) is indexed at position
-              ## nChrom(object).
-              n <- nChrom(object)
-              all <- FALSE
-              if (missing(chrom)) {
-                  chrom <- 1:n
-                  all <- TRUE
-              }
-              stopifnot(is.numeric(chrom))
-              chrom <- as.integer(chrom)
-              if (min(chrom) < 1 | max(chrom) > n)
-                  stop("Index out of bound [", 1, ":", n, "].")
-              ## Update index to match original indices at the C-level
-              chrom <- chrom - 1L
-              if (length(chrom) == 1 & !all) {
-                  ans <- object@backend$getChromatogramsInfo(chrom)
-              } else {
-                  ans <- lapply(chrom,
-                                function(x)
-                                    object@backend$getChromatogramsInfo(x))
-              }
-              return(ans)
-          })
-
-setMethod("chromatogramHeader", "mzRpwiz",
-          function(object, chrom) {
-              if (missing(chrom)) {
-                  res <- object@backend$getAllChromatogramHeaderInfo()
-              } else {
-                  stopifnot(is.numeric(chrom))
-                  n <- nChrom(object)
-                  if (min(chrom) < 1 || max(chrom) > n)
-                      stop("Index out of bound [", 1, ":", n, "]")
-                  chrom <- chrom -1L
-                  res <- object@backend$getChromatogramHeaderInfo(chrom)
-              }
-              res$chromatogramId <- as.character(res$chromatogramId)
-              res
-          })

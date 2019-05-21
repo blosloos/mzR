@@ -1,12 +1,13 @@
 Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML and mzIdentML files
-       (mass spectrometry data)
-Version: 2.15.2
-Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou, Johannes Rainer
-Maintainer: Steffen Neumann <sneumann@ipb-halle.de>,
-	    Laurent Gatto <lg390@cam.ac.uk>,
-	    Qiang Kou <qkou@umail.iu.edu>
+        (mass spectrometry data)
+Version: 2.8.1
+Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou
+Maintainer: Bernd Fischer <b.fischer@dkfz.de>,
+ Steffen Neumann <sneumann@ipb-halle.de>,
+ Laurent Gatto <lg390@cam.ac.uk>,
+ Qiang Kou <qkou@umail.iu.edu>
 Description: mzR provides a unified API to the common file formats and
         parsers available for mass spectrometry data. It comes with a
         wrapper for the ISB random access parser for mass spectrometry
@@ -17,14 +18,15 @@ Description: mzR provides a unified API to the common file formats and
 License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.10.1), methods, utils
-Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics (>= 1.9.1)
-Suggests: msdata (>= 0.15.1), RUnit, mzID, BiocStyle (>= 2.5.19), knitr, XML
+Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics
+Suggests: msdata (>= 0.3.5), RUnit, mzID, BiocStyle, knitr, XML
 VignetteBuilder: knitr
-LinkingTo: Rcpp, zlibbioc, Rhdf5lib (>= 1.1.4)
+LinkingTo: Rcpp, zlibbioc
 RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: C++11, GNU make, NetCDF
 URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
-RoxygenNote: 6.0.1
+NeedsCompilation: yes
+Packaged: 2017-01-07 00:05:49 UTC; biocbuild

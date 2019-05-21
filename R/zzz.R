@@ -1,4 +1,4 @@
-BUILT_RCPP_VERSION = package_version("0.12.15")
+BUILT_RCPP_VERSION = package_version("0.12.8")
 
 .onLoad <-
     function(libname, pkgname) {
@@ -12,7 +12,7 @@ BUILT_RCPP_VERSION = package_version("0.12.15")
                           "including the output of sessionInfo() to the Bioc support forum at \n",
                           "https://support.bioconductor.org/. For details see also\n",
                           "https://github.com/sneumann/mzR/wiki/mzR-Rcpp-compiler-linker-issue.")
-            #warning(msg)
+            warning(msg)
           }
       }
       require2 <- require

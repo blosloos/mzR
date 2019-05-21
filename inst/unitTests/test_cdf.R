@@ -40,45 +40,16 @@ test_header <- function() {
   cdf <- openMSfile(file, backend="netCDF")        
 
   h <- header(cdf)
-  checkEquals(ncol(h), 22)
+  checkEquals(ncol(h), 19)
   checkEquals(nrow(h), 1278)
-  checkTrue(any(colnames(h) == "centroided"))
-  checkTrue(all(is.na(h$centroided)))
-  
-  checkTrue(any(colnames(h) == "spectrumId"))
-  checkEquals(h$spectrumId, paste0("scan=", h$acquisitionNum))
-  
+
   h <- header(cdf, 1)
-  checkEquals(ncol(h), 22)
+  checkEquals(ncol(h), 19)
   checkEquals(nrow(h), 1)
 
   h <- header(cdf, 2:3)
-  checkEquals(ncol(h), 22)
+  checkEquals(ncol(h), 19)
   checkEquals(nrow(h), 2)
 
   close(cdf)
-}
-
-test_chromatogram <- function() {
-    file <- system.file('cdf/ko15.CDF', package = "msdata")
-    x <- openMSfile(file, backend="netCDF")        
-    suppressWarnings(
-        chr <- chromatogram(x)
-    )
-    checkTrue(length(chr) == 0)
-    suppressWarnings(
-        chr <- chromatograms(x)
-    )
-    checkTrue(length(chr) == 0)
-    close(x)
-}
-
-test_chromatogramHeader <- function() {
-    file <- system.file('cdf/ko15.CDF', package = "msdata")
-    x <- openMSfile(file, backend="netCDF")        
-    suppressWarnings(
-        ch <- chromatogramHeader(x)
-    )
-    checkTrue(nrow(ch) == 0)
-    close(x)
 }

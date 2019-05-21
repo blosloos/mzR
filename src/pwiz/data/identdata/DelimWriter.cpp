@@ -1,5 +1,5 @@
 //
-// $Id: DelimWriter.cpp 9934 2016-08-02 17:48:03Z chambm $
+// $Id: DelimWriter.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -127,7 +127,7 @@ PWIZ_API_DECL ostream* DelimWriter::write(const SpectrumIdentificationItem& sii)
     current_line.push_back(oss.str());
     
     CVParam cvParam = sii.cvParamChild(
-        MS_PSM_level_search_engine_specific_statistic);
+        MS_search_engine_specific_score_for_PSMs);
 
     if (cvParam.cvid != CVID_Unknown)
         current_line.push_back(cvParam.value);

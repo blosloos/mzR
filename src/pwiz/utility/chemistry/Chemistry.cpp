@@ -27,6 +27,7 @@
 #include "ChemistryData.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
+
 #include <Rcpp.h>
 
 
@@ -147,8 +148,8 @@ PWIZ_API_DECL const Info::Record& Info::record(const string& symbol) {return rec
 
 PWIZ_API_DECL ostream& operator<<(ostream& os, const Info::Record& r)
 {
-  Rcpp::Rcout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
-  copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(Rcpp::Rcout, " "));
+    Rcpp::Rcout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
+    copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(Rcpp::Rcout, " "));
     return os;
 }
 

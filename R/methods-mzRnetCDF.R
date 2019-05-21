@@ -22,31 +22,28 @@ setMethod("length",
             return(length(scanindex))
           })
 
-setMethod("peaks", "mzRnetCDF",
+setMethod("peaks",
+          signature=c("mzRnetCDF"),
           function(object, scans) {
-              if (missing(scans))
+              if (missing(scans)) 
                   scans <- 1:length(object)
+
               rawdata <- netCDFRawData(object@backend)
 
               if (length(scans) == 1) {
-                  idx <- seq(rawdata$scanindex[scans] + 1,
-                             min(rawdata$scanindex[scans + 1],
-                                 length(rawdata$mz), na.rm = TRUE))
-                  return(cbind(mz = rawdata$mz[idx],
-                               intensity = rawdata$intensity[idx]))
+                  idx <- seq(rawdata$scanindex[scans]+1,
+                             min(rawdata$scanindex[scans+1],
+                                 length(rawdata$mz), na.rm=TRUE))              
+                  return(cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx]))
               } else {
-                  return(sapply(scans, function(x) {
-                      idx <- seq(rawdata$scanindex[x] + 1,
-                                 min(rawdata$scanindex[x + 1],
-                                     length(rawdata$mz), na.rm = TRUE))
-                      cbind(mz = rawdata$mz[idx],
-                            intensity = rawdata$intensity[idx])
+                  return(sapply(scans,function(x) {
+                      idx <- seq(rawdata$scanindex[x]+1,
+                                 min(rawdata$scanindex[x+1],
+                                     length(rawdata$mz), na.rm=TRUE))
+                      cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx])
                   }, simplify = FALSE))
               }
           })
-
-setMethod("spectra", "mzRnetCDF",
-          function(object, scans) peaks(object, scans))
 
 ## setMethod("peaksCount",
 ##           signature=c("mzRnetCDF","numeric"),
@@ -91,11 +88,7 @@ setMethod("header",
                             mergedScan=rep(-1, length(scans)),
                             mergedResultScanNum=rep(-1, length(scans)),
                             mergedResultStartScanNum=rep(-1, length(scans)),
-                            mergedResultEndScanNum=rep(-1, length(scans)),
-                            injectionTime = rep(-1, length(scans)),
-                            spectrumId = paste0("scan=", scans),
-                            centroided = NA,
-                            stringsAsFactors = FALSE)
+                            mergedResultEndScanNum=rep(-1, length(scans)))
 
             return(result)
           })
@@ -169,13 +162,3 @@ setMethod("show",
             invisible(NULL)
           })
 
-setMethod("chromatograms", "mzRnetCDF", function(object, chrom)
-    chromatogram(object, chrom))
-setMethod("chromatogram", "mzRnetCDF", function(object, chrom) {
-    warning("The mzRnetCdf backend does not support chromatographic data")
-    .empty_chromatogram()
-})
-setMethod("chromatogramHeader", "mzRnetCDF", function(object, chrom) {
-    warning("The mzRnetCdf backend does not support chromatographic data")
-    .empty_chromatogram_header()
-})

@@ -27,6 +27,7 @@
 #include "pwiz/utility/misc/mru_list.hpp"
 #include <boost/thread.hpp>
 #include <deque>
+
 #include <Rcpp.h>
 
 
@@ -237,11 +238,11 @@ class SpectrumWorkerThreads::Impl
         catch (exception& e)
         {
             // TODO: log this
-            Rcpp::Rcerr << "[SpectrumWorkerThreads::work] error in thread: " << e.what() << endl;
+          Rcpp::Rcerr << "[SpectrumWorkerThreads::work] error in thread: " << e.what() << endl;
         }
         catch (...)
         {
-            Rcpp::Rcerr << "[SpectrumWorkerThreads::work] unknown exception in worker thread" << endl;
+          Rcpp::Rcerr << "[SpectrumWorkerThreads::work] unknown exception in worker thread" << endl;
         }
     }
 

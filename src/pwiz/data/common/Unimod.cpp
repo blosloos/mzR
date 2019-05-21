@@ -1,5 +1,5 @@
 //
-// $Id: Unimod.cpp 9934 2016-08-02 17:48:03Z chambm $
+// $Id: Unimod.cpp 6865 2014-10-31 21:47:12Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -25,13 +25,11 @@
 #include "Unimod.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
-#include <Rcpp.h>
 
 
 using namespace pwiz::cv;
 using namespace pwiz::chemistry;
 using namespace boost::logic;
-
 
 
 namespace pwiz {
@@ -62,7 +60,6 @@ struct UnimodData : public boost::singleton<UnimodData>
         brickFormulaByTitle["NeuGc"] = Formula("C11 H17 N1 O9");
         brickFormulaByTitle["Pent"] = Formula("C5 H8 O4");
         brickFormulaByTitle["Hep"] = Formula("C7 H12 O6");
-        brickFormulaByTitle["Me"] = Formula("C1 H2");
 
         brickFormulaByTitle["C"] = Formula("C1");
         brickFormulaByTitle["H"] = Formula("H1");
@@ -103,7 +100,6 @@ struct UnimodData : public boost::singleton<UnimodData>
         classificationMap["Post-translational"] = Classification::PostTranslational;
         classificationMap["Pre-translational"] = Classification::PreTranslational;
         classificationMap["AA substitution"] = Classification::Substitution;
-        classificationMap["Synth. pep. protect. gp."] = Classification::SynthPepProtectGP;
 
         vector<string> formulaTokens;
 
@@ -224,10 +220,10 @@ struct UnimodData : public boost::singleton<UnimodData>
                 indexByMonoisotopicMass.insert(make_pair(mod.deltaMonoisotopicMass(), modIndex));
                 indexByAverageMass.insert(make_pair(mod.deltaAverageMass(), modIndex));
             }
-            catch (exception& e)
+            catch (exception&)
             {
                 // TODO: log this error
-	      Rcpp::Rcerr << "[UnimodData::ctor] error parsing term \"" << term.id << "\": " << e.what() << "\n";
+                //cerr << "[UnimodData::ctor] error parsing term \"" << term.id << "\": " << e.what() << "\n";
                 //throw runtime_error("[UnimodData::ctor] error parsing mod \"" + title + "\"");
             }
         }

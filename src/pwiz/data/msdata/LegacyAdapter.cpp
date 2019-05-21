@@ -1,5 +1,5 @@
 //
-// $Id: LegacyAdapter.cpp 11174 2017-08-07 17:54:32Z pcbrefugee $
+// $Id: LegacyAdapter.cpp 5152 2013-11-14 18:28:17Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -196,16 +196,9 @@ void LegacyAdapter_Instrument::manufacturerAndModel(const string& valueManufactu
 
 PWIZ_API_DECL string LegacyAdapter_Instrument::ionisation() const
 {
-    try
-    {
-        return impl_->get(impl_->instrumentConfiguration.componentList.source(0),
-            MS_ionization_type,
-            "msIonisation");
-    }
-    catch (...)
-    {
-        return "Unknown"; // Empty component list is legal
-    }
+    return impl_->get(impl_->instrumentConfiguration.componentList.source(0), 
+                      MS_ionization_type, 
+                      "msIonisation");
 }
 
 
@@ -220,16 +213,9 @@ PWIZ_API_DECL void LegacyAdapter_Instrument::ionisation(const string& value)
 
 PWIZ_API_DECL string LegacyAdapter_Instrument::analyzer() const
 {
-    try
-    {
-        return impl_->get(impl_->instrumentConfiguration.componentList.analyzer(0), 
+    return impl_->get(impl_->instrumentConfiguration.componentList.analyzer(0), 
                       MS_mass_analyzer_type, 
                       "msMassAnalyzer");
-    }
-    catch (...)
-    {
-        return "Unknown"; // Empty component list is legal
-    }
 }
 
 
@@ -244,15 +230,9 @@ PWIZ_API_DECL void LegacyAdapter_Instrument::analyzer(const string& value)
 
 PWIZ_API_DECL string LegacyAdapter_Instrument::detector() const
 {
-    try {
-        return impl_->get(impl_->instrumentConfiguration.componentList.detector(0), 
+    return impl_->get(impl_->instrumentConfiguration.componentList.detector(0), 
                       MS_detector_type, 
                       "msDetector");
-    }
-    catch (...)
-    {
-        return "Unknown"; // Empty component list is legal
-    }
 }
 
 

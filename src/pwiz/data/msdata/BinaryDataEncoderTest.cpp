@@ -310,7 +310,7 @@ void testBadFile(const string& filename)
     }
     catch (exception&)
     {
-        Rcpp::Rcerr << "\nUnable to find file " << filename << endl;
+        cerr << "\nUnable to find file " << filename << endl;
         return;
     }
 

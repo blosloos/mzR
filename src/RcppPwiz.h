@@ -10,7 +10,6 @@
 
 #include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
-#include "pwiz/data/msdata/MSData.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
 #include "pwiz/data/msdata/Serializer_mzXML.hpp"
@@ -49,11 +48,6 @@ private:
     Rcpp::DataFrame allScanHeaderInfo;
     bool isInCacheAllScanHeaderInfo;
     string filename;
-    void addSpectrumList(MSData& msd,
-			 Rcpp::DataFrame& spctr_header,
-			 Rcpp::List& spctr_data,
-			 bool rtime_seconds);
-    void addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc);
 
 public:
 
@@ -62,47 +56,26 @@ public:
 
     void open(const string& fileNames);
     void close();
-    /* void writeMSfile(const string& filenames, const string& format); */
-    void writeSpectrumList(const string& file, const string& format,
-			   Rcpp::DataFrame spctr_header, Rcpp::List spctr_data,
-			   bool rtime_seconds,
-			   Rcpp::List software_processing);
-    void copyWriteMSfile(const string& file, const string& format,
-			 const string& originalFile,
-			 Rcpp::DataFrame spctr_header,
-			 Rcpp::List spctr_data,
-			 bool rtime_seconds,
-			 Rcpp::List software_processing);
+    //void writeMSfile(const string& filenames, const string& format);
+
     string getFilename();
 
     int getLastScan() const;
-
-    int getLastChrom() const;
 
     Rcpp::List getInstrumentInfo();
 
     Rcpp::List getRunInfo();
 
-    /**
-     * Reads the scan header for the provided scan(s). Note that this function
-     * no longer returns a List, but a DataFrame, even if length whichScan is 1.
-     * @return The scan header info is returned as a Rcpp::DataFrame
-     **/
-    Rcpp::DataFrame getScanHeaderInfo(Rcpp::IntegerVector whichScan);
+    Rcpp::List getScanHeaderInfo(int whichScan);
 
-    Rcpp::DataFrame getChromatogramHeaderInfo(Rcpp::IntegerVector whichScan);
-
-    Rcpp::DataFrame getChromatogramsInfo(int whichChrom);
+    Rcpp::DataFrame getChromatogramsInfo();
 
     Rcpp::DataFrame getAllScanHeaderInfo();
-
-    Rcpp::DataFrame getAllChromatogramHeaderInfo();
 
     Rcpp::List getPeakList(int whichScan);
 
     Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
 
-    string getRunStartTimeStamp();
 };
 
 #endif

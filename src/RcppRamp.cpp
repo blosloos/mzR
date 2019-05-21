@@ -55,7 +55,7 @@ Rcpp::StringVector RcppRamp::getFilename (  )
     {
         return filename;
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return filename;
 }
 
@@ -86,7 +86,7 @@ Rcpp::List RcppRamp::getRunInfo (  )
         }
         return runInfo;
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n");
     return runInfo;
 }
 
@@ -130,7 +130,7 @@ Rcpp::List RcppRamp::getInstrumentInfo ( )
         }
         return(instrumentInfo);
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return instrumentInfo;
 }
 
@@ -148,7 +148,7 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         delete info;
 
         std::vector<std::string> names;
-        Rcpp::List header(22);
+        Rcpp::List header(21);
         int i = 0;
 
         names.push_back("seqNum");
@@ -193,14 +193,12 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         header[i++] = Rcpp::wrap(data.mergedResultStartScanNum);
         names.push_back("mergedResultEndScanNum");
         header[i++] = Rcpp::wrap(data.mergedResultEndScanNum);
-        names.push_back("injectionTime");
-        header[i++] = 0;
 
         header.attr("names") = names;
 
         return  header;
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return Rcpp::List::create( );
 }
 
@@ -262,7 +260,7 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
                 mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
             }
 
-            Rcpp::List header(22);
+            Rcpp::List header(21);
             std::vector<std::string> names;
             int i = 0;
 
@@ -308,8 +306,6 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
             header[i++] =Rcpp::wrap(mergedResultStartScanNum);
             names.push_back("mergedResultEndScanNum");
             header[i++] =Rcpp::wrap(mergedResultEndScanNum);
-            names.push_back("injectionTime");
-            header[i++] = 0;
             
 			header.attr("names") = names;
 			
@@ -322,7 +318,7 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
         }
         return(allScanHeaderInfo);
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return Rcpp::DataFrame::create( );
 }
 
@@ -361,7 +357,7 @@ Rcpp::List RcppRamp::getPeakList ( int whichScan )
                    Rcpp::_["peaks"]  = peaks
                ) ;
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return Rcpp::List::create( );
 }
 
@@ -384,7 +380,7 @@ Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double wh
         }
         // map3d = 0.0;
         int j=0;
-        //Rprintf("%d\n",1);
+        Rprintf("%d\n",1);
         for (int i = 0; i < scanNumbers.size(); i++)
         {
             rampPeakList *pl = ramp->getPeakList( scanNumbers[i] );
@@ -415,7 +411,7 @@ Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double wh
         }
         return(map3d);
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return Rcpp::NumericMatrix(0,0);
 }
 
@@ -425,7 +421,7 @@ int RcppRamp::getLastScan() const
     {
         return ramp->getLastScan();
     }
-    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
+    Rprintf("Warning: Ramp not yet initialized.\n ");
     return -1;
 }
 
